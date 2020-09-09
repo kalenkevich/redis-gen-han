@@ -1,6 +1,6 @@
-const { StoreRecordStatus } = require('../consts/StoreRecordStatus');
 const { EventTypes } = require('../event/Event');
 const BaseHandler = require('./BaseHandler');
+const { HandlerStatus, getStatusStamp } = require('./HandlerStatus');
 
 class NumberHandler extends BaseHandler {
   get eventToHandle() {
@@ -14,7 +14,7 @@ class NumberHandler extends BaseHandler {
       return;
     }
 
-    const generatedDataFromStore = await this.store.getset(EventTypes.GENERATE_INTEGER, { status: StoreRecordStatus.IN_PROGRESS });
+    const generatedDataFromStore = await this.store.getset(EventTypes.GENERATE_INTEGER, getStatusStamp(HandlerStatus.IN_PROGRESS));
 
     if (!generatedDataFromStore) {
       this.logger.warn(`[${this.name}]: event ${systemEvent.type} record doesn't exist in a store. Record can be expired already`);
@@ -22,7 +22,7 @@ class NumberHandler extends BaseHandler {
       return;
     }
 
-    if (generatedDataFromStore.status !== StoreRecordStatus.NOT_HANDLED) {
+    if (generatedDataFromStore.status !== HandlerStatus.NOT_HANDLED) {
       this.logger.info(`[${this.name}]: event ${systemEvent.type} handling or already handled by other handler`);
 
       return;
@@ -31,7 +31,7 @@ class NumberHandler extends BaseHandler {
     const generatedInteger = systemEvent.data;
 
     this.lock();
-    await this.store.set(EventTypes.GENERATE_INTEGER, { ...generatedDataFromStore, status: StoreRecordStatus.IN_PROGRESS });
+    await this.store.set(EventTypes.GENERATE_INTEGER, getStatusStamp(HandlerStatus.IN_PROGRESS));
 
     if (this.isSuccessGeneration(generatedInteger)) {
       this.logger.info(`[${this.name}]: get generated number: ${generatedInteger} <= 8, calling success callback`);
@@ -43,7 +43,7 @@ class NumberHandler extends BaseHandler {
       await this.errorHandler(systemEvent);
     }
 
-    await this.store.set(EventTypes.GENERATE_INTEGER, { ...generatedDataFromStore, status: StoreRecordStatus.HANDLED });
+    await this.store.set(EventTypes.GENERATE_INTEGER, getStatusStamp(HandlerStatus.HANDLED));
     this.unlock();
   }
 

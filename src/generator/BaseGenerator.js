@@ -1,4 +1,5 @@
 const SystemEvent = require('../event/Event');
+const { getStatusStamp } = require('./GeneratorStatus');
 const BaseRoutine = require('../routine/BaseRoutine');
 
 class BaseGenerator extends BaseRoutine {
@@ -58,7 +59,7 @@ class BaseGenerator extends BaseRoutine {
   doRoutine() {
     const generateResult = this.generate();
 
-    this.setGeneratorActiveState(generateResult);
+    this.setGeneratorActiveState();
 
     if (typeof this.onGenerate === 'function') {
       this.onGenerate(generateResult);
@@ -77,8 +78,8 @@ class BaseGenerator extends BaseRoutine {
     this.eventListener.unsubscribe(this.sendGeneratorActiveStateEvent);
   }
 
-  setGeneratorActiveState(generateResult) {
-    this.store.set(this.activeGeneratorEventType, this.getActiveEventData(generateResult), 'PX', this.generationPeriodInMs);
+  setGeneratorActiveState() {
+    this.store.set(this.activeGeneratorEventType, this.getActiveEventData(), 'PX', this.generationPeriodInMs);
   }
 
   sendGeneratorActiveStateEvent() {
@@ -88,11 +89,8 @@ class BaseGenerator extends BaseRoutine {
     }));
   }
 
-  getActiveEventData(generateResult) {
-    return {
-      status: 'ACTIVE',
-      data: generateResult,
-    };
+  getActiveEventData() {
+    return getStatusStamp();
   }
 }
 

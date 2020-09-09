@@ -23,9 +23,17 @@ class RedisStoreWithPubSub extends BaseStoreWithPubSub {
     return this.safeParseJSON(stringValue);
   }
 
-  async getset(key, value, ...rest) {
+  async getset(key, value, expireModifier, expireTime) {
     const stringifiedValue = JSON.stringify(value);
-    const stringValue = await this.redis.getset(key, stringifiedValue, ...rest);
+    const stringValue = await this.redis.getset(key, stringifiedValue);
+
+    if (expireModifier === 'EX') {
+      this.redis.expire(key, expireTime);
+    } else if (expireModifier === 'PX') {
+      const timeInSeconds = expireTime / 1000;
+
+      this.redis.expire(key, timeInSeconds);
+    }
 
     return this.safeParseJSON(stringValue);
   }

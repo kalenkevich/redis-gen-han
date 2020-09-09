@@ -1,5 +1,5 @@
 const { EventTypes } = require('../event/Event');
-const { StoreRecordStatus } = require('../consts/StoreRecordStatus');
+const { getStatusStamp } = require('../handler/HandlerStatus');
 const BaseGenerator = require('./BaseGenerator');
 
 class NumberGenerator extends BaseGenerator {
@@ -32,11 +32,7 @@ class NumberGenerator extends BaseGenerator {
       timestamp,
     };
 
-    this.store.set(this.generationEventType, {
-      status: StoreRecordStatus.NOT_HANDLED,
-      data: generatedNumber,
-      timestamp,
-    }, 'PX', this.generationPeriodInMs).then(() => {
+    this.store.set(this.generationEventType, getStatusStamp(), 'PX', this.generationPeriodInMs).then(() => {
       this.eventListener.dispatchEvent(eventData);
     });
 

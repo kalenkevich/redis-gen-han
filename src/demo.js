@@ -27,17 +27,10 @@ const demo = () => {
 
   stopRoutineAfter(routine1, 20000);
   stopRoutineAfter(routine2, 35000);
-  stopRoutineAfter(routine4, 48000);
-  stopRoutineAfter(routine5, 48000);
-
-  process.on('exit', (code) => {
-    routine1.stop();
-    routine2.stop();
-    routine3.stop();
-    routine4.stop();
-    routine5.stop();
-
-    logger.info('Process exit event with code: ', code);
+  stopRoutineAfter(routine3, 45000);
+  stopRoutineAfter(routine4, 52000);
+  stopRoutineAfter(routine5, 54000, () => {
+    process.exit();
   });
 };
 
