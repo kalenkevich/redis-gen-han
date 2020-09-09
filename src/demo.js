@@ -1,21 +1,22 @@
 const { getConfig } = require('./config');
-const ConsoleLogger = require('./logger/ConsoleLogger');
-const MemoryStoreWithPubSub = require('./store/MemoryStoreWithPubSub');
+const PinoLogger = require('./logger/PinoLogger');
+const RedisStore = require('./store/RedisStoreWithPubSub');
 const { generateSystemRoutineWithScheduledStart, stopRoutineAfter } = require('./utils');
 
 /**
- * This method init and start series of routines.
- * As a store here is used MemoryStore for testing/debug purpose.
+ * This method start and after some time stop series of routines (processes).
+ * As a store here is used Redis.
+ * For testing/debug purpose I recommend to use MemoryStore. (see test.js)
  **/
-const test = () => {
+const demo = () => {
   const config = getConfig();
-  const logger = new ConsoleLogger({ config });
-  const memoryStore = new MemoryStoreWithPubSub({ config, logger });
+  const logger = new PinoLogger({ config });
+  const redisStore = new RedisStore({ config, logger });
   const routineParams = {
     config,
     logger,
-    store: memoryStore,
-    pubSub: memoryStore,
+    store: redisStore,
+    pubSub: redisStore,
   };
 
   const routine1 = generateSystemRoutineWithScheduledStart(routineParams);
@@ -40,4 +41,4 @@ const test = () => {
   });
 };
 
-test();
+demo();

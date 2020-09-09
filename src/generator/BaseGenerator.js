@@ -41,6 +41,8 @@ class BaseGenerator extends BaseRoutine {
     this.doRoutine();
 
     this.intervalId = setInterval(this.doRoutine, this.generationPeriodInMs);
+
+    this.logger.info(`[${this.name}]: started`);
   }
 
   stop() {
@@ -49,6 +51,8 @@ class BaseGenerator extends BaseRoutine {
     clearInterval(this.intervalId);
 
     this.intervalId = null;
+
+    this.logger.info(`[${this.name}]: stopped`);
   }
 
   doRoutine() {
@@ -86,7 +90,6 @@ class BaseGenerator extends BaseRoutine {
 
   getActiveEventData(generateResult) {
     return {
-      routineId: process.getuid(),
       status: 'ACTIVE',
       data: generateResult,
     };

@@ -22,10 +22,19 @@ const generateSystemRoutineWithScheduledStart = (routineParams, timeoutInMS = 0,
 
   setTimeout(() => {
     newRoutine.start();
-    onStart();
+
+    onStart(newRoutine);
   }, timeoutInMS);
 
   return newRoutine;
+};
+
+const stopRoutineAfter = (routine, timeoutInMS, onStop = () => {}) => {
+  setTimeout(() => {
+    routine.stop();
+
+    onStop(routine);
+  }, timeoutInMS);
 };
 
 const generateRoutineName = () => uuidv4();
@@ -34,4 +43,5 @@ module.exports = {
   generateRoutineName,
   generateSystemRoutineAfter,
   generateSystemRoutineWithScheduledStart,
+  stopRoutineAfter,
 };

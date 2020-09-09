@@ -18,11 +18,15 @@ class BaseMonitor extends BaseRoutine {
   start() {
     this.eventListener.subscribe(this.eventTypeToMonitor, this.eventHandler);
     this.setupTimeoutToHandleMaxPeriodLimit();
+
+    this.logger.info(`[${this.name}]: started`);
   }
 
   stop() {
     this.eventListener.unsubscribe(this.eventHandler);
     this.clearTimeoutToHandleMaxPeriodLimit();
+
+    this.logger.info(`[${this.name}]: stopped`);
   }
 
   doRoutine(...args) {

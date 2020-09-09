@@ -34,10 +34,14 @@ class BaseHandler extends BaseRoutine {
 
   start() {
     this.subscribeOnEvents();
+
+    this.logger.info(`[${this.name}]: started`);
   }
 
   stop() {
     this.unsubscribeFromEvents();
+
+    this.logger.info(`[${this.name}]: stopped`);
   }
 
   subscribeOnEvents() {

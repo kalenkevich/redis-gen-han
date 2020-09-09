@@ -5,6 +5,10 @@ const NumberGenerator = require('../generator/NumberGenerator');
 const NumberHandler = require('../handler/NumberHandler');
 const GeneratorMonitor = require('../monitor/GeneratorMonitor');
 
+/**
+ * If after configurable time (MAX_PERIOD_BETWEEN_GENERATIONS_IN_MS) no any generation event will be dispatched,
+ * then current routine will stop handle generation events and become a generator.
+ * */
 class SystemRoutine extends BaseRoutine {
   constructor({ config, logger, store, pubSub, name }) {
     super({ name: `${name} SystemRoutine`});
@@ -49,11 +53,15 @@ class SystemRoutine extends BaseRoutine {
     this.routine = this.numberHandler;
     this.routine.start();
     this.generatorMonitor.start();
+
+    this.logger.info(`[${this.name}]: started`);
   }
 
   stop() {
     this.routine.stop();
     this.generatorMonitor.stop();
+
+    this.logger.info(`[${this.name}]: stopped`);
   }
 
   async makeGeneratorAsRoutine() {
