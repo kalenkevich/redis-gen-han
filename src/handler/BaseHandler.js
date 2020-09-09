@@ -1,8 +1,8 @@
 const BaseRoutine = require('../routine/BaseRoutine');
 
 class BaseHandler extends BaseRoutine {
-  constructor({ config, eventListener, logger, store }) {
-    super();
+  constructor({ name, config, eventListener, logger, store }) {
+    super({ name });
 
     this.config = config;
     this.logger = logger;

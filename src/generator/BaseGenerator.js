@@ -3,13 +3,14 @@ const BaseRoutine = require('../routine/BaseRoutine');
 
 class BaseGenerator extends BaseRoutine {
   constructor({
+    name,
     config,
     logger,
     store,
     eventListener,
     onGenerate,
 }) {
-    super();
+    super({ name });
 
     this.config = config;
     this.logger = logger;

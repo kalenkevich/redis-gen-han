@@ -1,8 +1,8 @@
 const BaseRoutine = require('../routine/BaseRoutine');
 
 class BaseMonitor extends BaseRoutine {
-  constructor({ config, logger, eventListener, onMaxPeriodLimitReached }) {
-    super();
+  constructor({ name, config, logger, eventListener, onMaxPeriodLimitReached }) {
+    super({ name });
 
     this.config = config;
     this.logger = logger;

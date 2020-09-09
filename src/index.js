@@ -13,9 +13,34 @@ const start = () => {
     logger,
     store: redisStore,
     pubSub: redisStore,
+    name: 'routine1',
   });
 
   routine.start();
+
+  setTimeout(() => {
+    const routine2 = new SystemRoutine({
+      config,
+      logger,
+      store: redisStore,
+      pubSub: redisStore,
+      name: 'routine2',
+    });
+
+    routine2.start();
+  }, 200);
+
+  setTimeout(() => {
+    const routine3 = new SystemRoutine({
+      config,
+      logger,
+      store: redisStore,
+      pubSub: redisStore,
+      name: 'routine3',
+    });
+
+    routine3.start();
+  }, 400);
 
   process.on('exit', (code) => {
     routine.stop();
@@ -34,6 +59,7 @@ const testStart = () => {
     logger,
     store: memoryStore,
     pubSub: memoryStore,
+    name: 'routine1',
   });
 
   setTimeout(() => {
@@ -42,6 +68,7 @@ const testStart = () => {
       logger,
       store: memoryStore,
       pubSub: memoryStore,
+      name: 'routine2',
     });
 
     routine2.start();
@@ -51,12 +78,11 @@ const testStart = () => {
 
   process.on('exit', (code) => {
     routine1.stop();
-    routine2.stop();
 
     logger.info('Process exit event with code: ', code);
   });
 };
 
-// start();
+start();
 
-testStart();
+// testStart();

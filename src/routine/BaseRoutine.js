@@ -1,4 +1,8 @@
 class BaseRoutine {
+  constructor({ name }) {
+    this.name = name;
+  }
+
   start() {
     throw new Error('should be overridden');
   }

@@ -6,6 +6,15 @@ class RedisStoreWithPubSub extends BaseStoreWithPubSub {
     super({ config, logger });
 
     this.redis = new IORedis(config.REDIS_CONNECTION_STRING);
+    this.sub = new IORedis(config.REDIS_CONNECTION_STRING);
+
+    this.sub.subscribe(this.config.SYSTEM_CHANNEL_NAME, (err, count) => {
+      if (!err) {
+        this.logger.info(`[RedisStoreWithPubSub] subscribed to the channel: ${this.config.SYSTEM_CHANNEL_NAME}`)
+      } else {
+        this.logger.error(`[RedisStoreWithPubSub] error while subscribing to the channel: ${this.config.SYSTEM_CHANNEL_NAME}, error => ${error.message}`)
+      }
+    });
   }
 
   async get(key) {
@@ -37,7 +46,7 @@ class RedisStoreWithPubSub extends BaseStoreWithPubSub {
       return handler(channel, eventData);
     };
 
-    return this.redis.on("message", internalMessageHandler);
+    return this.sub.on('message', internalMessageHandler);
   }
 
   safeParseJSON(stringValue) {
