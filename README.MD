@@ -18,3 +18,6 @@ You can configure next params:
  - `MAX_INTEGER_TO_GENERATE`: max limit of number to generate by generator. Default is `10`. 
  - `STORE_ERROR_RECORD_NAME`: key for store to handle error records. Default is `STORE_ERROR_RECORD_NAME`
  - `STORE_SUCCESS_RECORD_NAME`: key for store to handle success records. Default is `STORE_SUCCESS_RECORD_NAME`,
+
+Example:
+`node ./src/index.js --GENERATION_PERIOD_IN_MS 1000`

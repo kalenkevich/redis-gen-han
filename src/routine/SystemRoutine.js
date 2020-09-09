@@ -2,7 +2,7 @@ const { EventTypes } = require('../event/Event');
 const BaseRoutine = require('./BaseRoutine');
 const EventListener = require('../event/EventListener');
 const NumberGenerator = require('../generator/NumberGenerator');
-const { getStatusStamp } = require('../generator/GeneratorStatus');
+const { getStatusStamp, GeneratorStatus } = require('../generator/GeneratorStatus');
 const NumberHandler = require('../handler/NumberHandler');
 const GeneratorMonitor = require('../monitor/GeneratorMonitor');
 
@@ -68,7 +68,7 @@ class SystemRoutine extends BaseRoutine {
   async makeGeneratorAsRoutine() {
     const result = await this.store.getset(EventTypes.ACTIVE_NUMBER_GENERATOR, getStatusStamp(), 'PX', this.config.GENERATION_PERIOD_IN_MS);
 
-    if (result && result.status === 'ACTIVE') {
+    if (result && result.status === GeneratorStatus.ACTIVE) {
       this.logger.info(`[${this.name}]: skip promoting number generator as a routine as generator already exit`);
 
       return;
