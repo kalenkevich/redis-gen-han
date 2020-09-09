@@ -1,17 +1,17 @@
 const { getConfig } = require('./config');
-const PinoLogger = require('./logger/PinoLogger');
-const RedisStore = require('./store/RedisStoreWithPubSub');
+const ConsoleLogger = require('./logger/ConsoleLogger');
+const MemoryStoreWithPubSub = require('./store/MemoryStoreWithPubSub');
 const { generateSystemRoutineWithScheduledStart } = require('./utils');
 
 const start = () => {
   const config = getConfig();
-  const logger = new PinoLogger({ config });
-  const redisStore = new RedisStore({ config, logger });
+  const logger = new ConsoleLogger({ config });
+  const memoryStore = new MemoryStoreWithPubSub({ config, logger });
   const routineParams = {
     config,
     logger,
-    store: redisStore,
-    pubSub: redisStore,
+    store: memoryStore,
+    pubSub: memoryStore,
   };
 
   const routine1 = generateSystemRoutineWithScheduledStart(routineParams);

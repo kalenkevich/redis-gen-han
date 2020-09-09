@@ -7,7 +7,7 @@ const GeneratorMonitor = require('../monitor/GeneratorMonitor');
 
 class SystemRoutine extends BaseRoutine {
   constructor({ config, logger, store, pubSub, name }) {
-    super({ name });
+    super({ name: `${name} SystemRoutine`});
 
     this.config = config;
     this.logger = logger;
@@ -16,8 +16,12 @@ class SystemRoutine extends BaseRoutine {
     this.routine = null;
     this.makeGeneratorAsRoutine = this.makeGeneratorAsRoutine.bind(this);
 
-    const eventListener = new EventListener({ config, logger, pubSub });
-
+    const eventListener = new EventListener({
+      name: `${name} EventListener`,
+      config,
+      logger,
+      pubSub,
+    });
     this.numberGenerator = new NumberGenerator({
       name: `${name} NumberGenerator`,
       config,
@@ -56,7 +60,7 @@ class SystemRoutine extends BaseRoutine {
     const result = await this.store.get(EventTypes.ACTIVE_NUMBER_GENERATOR);
 
     if (result && result.status === 'ACTIVE') {
-      this.logger.info(`routine: ${this.name} - skip promoting number generator as a routine as generator already exit`);
+      this.logger.info(`[${this.name}]: skip promoting number generator as a routine as generator already exit`);
 
       return;
     }
@@ -65,7 +69,7 @@ class SystemRoutine extends BaseRoutine {
     this.routine = this.numberGenerator;
     this.routine.start();
 
-    this.logger.info(`routine: ${this.name} - promoting current routine as number generator`);
+    this.logger.info(`[${this.name}]: promoting current routine as number generator`);
   }
 
   doRoutine() {}

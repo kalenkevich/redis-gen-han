@@ -21,6 +21,9 @@ class NumberGenerator extends BaseGenerator {
 
   generate() {
     const generatedNumber = Math.floor(Math.random() * Math.floor(this.config.MAX_INTEGER_TO_GENERATE));
+
+    this.logger.info(`[${this.name}]: generated new number: ${generatedNumber}`);
+
     const timestamp = Date.now();
 
     const eventData = {

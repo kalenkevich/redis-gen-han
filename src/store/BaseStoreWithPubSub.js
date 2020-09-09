@@ -12,6 +12,10 @@ class BaseStoreWithPubSub {
     throw new Error('should be overridden');
   }
 
+  getset() {
+    throw new Error('should be overridden');
+  }
+
   increment() {
     throw new Error('should be overridden');
   }

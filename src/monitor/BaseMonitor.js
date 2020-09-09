@@ -48,7 +48,7 @@ class BaseMonitor extends BaseRoutine {
   }
 
   maxPeriodLimitReachHandler() {
-    this.logger.info(`[BaseMonitor.monitor] for eventType: ${this.eventTypeToMonitor} max limit for ${this.getEventToMonitorMaxLimitInMS} was reached`);
+    this.logger.info(`[${this.name}]: for eventType: ${this.eventTypeToMonitor} max limit for ${this.getEventToMonitorMaxLimitInMS} was reached`);
 
     this.onMaxPeriodLimitReached();
     this.setupTimeoutToHandleMaxPeriodLimit();
@@ -70,7 +70,7 @@ class BaseMonitor extends BaseRoutine {
   }
 
   monitor({ event, startTimestamp, endTimestamp }) {
-    this.logger.info(`[BaseMonitor.monitor] next eventType: ${event.type} was publish after ${endTimestamp - startTimestamp} ms`);
+    this.logger.info(`[${this.name}]: next eventType: ${event.type} was publish after ${endTimestamp - startTimestamp} ms`);
   }
 }
 

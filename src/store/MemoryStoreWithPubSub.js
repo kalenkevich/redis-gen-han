@@ -16,6 +16,25 @@ class MemoryStoreWithPubSub extends BaseStoreWithPubSub {
     });
   }
 
+  getset(key, value, expireFlag, expireTime) {
+    return new Promise(resolve => {
+      if (expireFlag === 'PX') {
+        setTimeout(() => {
+          this.store[key] = null;
+
+          this.debugStore();
+        }, expireTime);
+      }
+
+      const value = this.store[key];
+      this.store[key] = value;
+
+      this.debugStore();
+
+      resolve(value || null);
+    });
+  }
+
   set(key, value, expireFlag, expireTime) {
     if (expireFlag === 'PX') {
       setTimeout(() => {

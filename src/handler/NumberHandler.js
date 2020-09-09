@@ -9,21 +9,21 @@ class NumberHandler extends BaseHandler {
 
   async handle(systemEvent) {
     if (this.isLocked()) {
-      this.logger.warn(`[NumberHandler.handle] handler is locked`);
+      this.logger.warn(`[${this.name}]: handler is locked`);
 
       return;
     }
 
-    const generatedDataFromStore = await this.store.get(EventTypes.GENERATE_INTEGER);
+    const generatedDataFromStore = await this.store.getset(EventTypes.GENERATE_INTEGER, { status: StoreRecordStatus.IN_PROGRESS });
 
     if (!generatedDataFromStore) {
-      this.logger.warn(`[NumberHandler.handle] event ${systemEvent.type} record doesn't exist in a store. Record can be expired already`);
+      this.logger.warn(`[${this.name}]: event ${systemEvent.type} record doesn't exist in a store. Record can be expired already`);
 
       return;
     }
 
     if (generatedDataFromStore.status !== StoreRecordStatus.NOT_HANDLED) {
-      this.logger.warn(`[NumberHandler.handle] event ${systemEvent.type} handling or already handled by other handler`);
+      this.logger.info(`[${this.name}]: event ${systemEvent.type} handling or already handled by other handler`);
 
       return;
     }
@@ -34,11 +34,11 @@ class NumberHandler extends BaseHandler {
     await this.store.set(EventTypes.GENERATE_INTEGER, { ...generatedDataFromStore, status: StoreRecordStatus.IN_PROGRESS });
 
     if (this.isSuccessGeneration(generatedInteger)) {
-      this.logger.info(`[NumberHandler.handle] get generated number: ${generatedInteger} <= 8, calling success callback`);
+      this.logger.info(`[${this.name}]: get generated number: ${generatedInteger} <= 8, calling success callback`);
 
       await this.successHandler(systemEvent);
     } else {
-      this.logger.info(`[NumberHandler.handle] get generated number: ${generatedInteger} > 8, calling error callback`);
+      this.logger.info(`[${this.name}]: get generated number: ${generatedInteger} > 8, calling error callback`);
 
       await this.errorHandler(systemEvent);
     }
@@ -48,7 +48,7 @@ class NumberHandler extends BaseHandler {
   }
 
   isSuccessGeneration(generatedInteger) {
-    return generatedInteger < 8;
+    return generatedInteger <= 8;
   }
 
   async successHandler() {
@@ -57,11 +57,11 @@ class NumberHandler extends BaseHandler {
     if (value === null) {
       await this.store.set(this.config.STORE_SUCCESS_RECORD_NAME, 1);
 
-      this.logger.info(`[NumberHandler.successHandler] increment count of successfully handled generations: new value is 1`);
+      this.logger.info(`[${this.name}]: increment count of successfully handled generations: new value is 1`);
     } else {
       const newValue = await this.store.increment(this.config.STORE_SUCCESS_RECORD_NAME);
 
-      this.logger.info(`[NumberHandler.successHandler] increment count of successfully handled generations: new value is ${newValue}`);
+      this.logger.info(`[${this.name}]: increment count of successfully handled generations: new value is ${newValue}`);
     }
   }
 

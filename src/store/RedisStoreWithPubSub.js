@@ -23,6 +23,13 @@ class RedisStoreWithPubSub extends BaseStoreWithPubSub {
     return this.safeParseJSON(stringValue);
   }
 
+  async getset(key, value, ...rest) {
+    const stringifiedValue = JSON.stringify(value);
+    const stringValue = await this.redis.getset(key, stringifiedValue, ...rest);
+
+    return this.safeParseJSON(stringValue);
+  }
+
   set(key, value, ...rest) {
     const stringifiedValue = JSON.stringify(value);
 

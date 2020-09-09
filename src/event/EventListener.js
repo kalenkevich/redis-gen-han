@@ -1,5 +1,6 @@
 class EventListener {
-  constructor({ config, logger, pubSub }) {
+  constructor({ config, logger, pubSub, name }) {
+    this.name = name;
     this.config = config;
     this.logger = logger;
     this.pubSub = pubSub;
@@ -19,28 +20,28 @@ class EventListener {
     });
 
     if (isHandlerAlreadyExist) {
-      this.logger.warn(`[BaseEventListener.addEventListener] event listener with such eventType: ${eventType} and handler already exists`);
+      this.logger.warn(`[${this.name}]: event listener with such eventType: ${eventType} and handler already exists`);
 
       return;
     }
 
     this.eventHandlers.push({ eventType, handler });
 
-    this.logger.debug(`[BaseEventListener.addEventListener] add event listener for eventType: ${eventType}`);
+    this.logger.debug(`[${this.name}]: add event listener for eventType: ${eventType}`);
   }
 
   removeEventListener(handler) {
     const listener = this.eventHandlers.find(eventHandler => eventHandler.handler === handler);
 
     if (!listener) {
-      this.logger.warn(`[BaseEventListener.removeEventListener] no such handlers to remove`);
+      this.logger.warn(`[${this.name}]: no such handlers to remove`);
 
       return;
     }
 
     this.eventHandlers = this.eventHandlers.filter(eventHandler => eventHandler.handler !== handler);
 
-    this.logger.debug(`[BaseEventListener.removeEventListener] remove event listener for eventType: ${listener.eventType}`);
+    this.logger.debug(`[${this.name}]: remove event listener for eventType: ${listener.eventType}`);
   }
 
   notifyListeners(event) {
@@ -53,7 +54,7 @@ class EventListener {
 
   handleEventByType(channel, event) {
     if (channel !== this.config.SYSTEM_CHANNEL_NAME) {
-      this.logger(`[RedisEventListener.handleEventByType] non ${this.config.SYSTEM_CHANNEL_NAME} channel`);
+      this.logger(`[${this.name}]: non ${this.config.SYSTEM_CHANNEL_NAME} channel`);
 
       return;
     }
