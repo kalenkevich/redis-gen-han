@@ -7,7 +7,6 @@ const SystemRoutine = require('./routine/SystemRoutine');
 const start = () => {
   const config = getConfig();
   const logger = new PinoLogger({ config });
-  const memoryStore = new MemoryStore({ config, logger });
   const redisStore = new RedisStore({ config, logger });
   const routine = new SystemRoutine({
     config,

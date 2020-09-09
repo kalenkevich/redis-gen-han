@@ -4,7 +4,7 @@ const BaseGenerator = require('./BaseGenerator');
 
 class NumberGenerator extends BaseGenerator {
   get generationPeriodInMs() {
-    return this.config.generationPeriodInMs;
+    return this.config.GENERATION_PERIOD_IN_MS;
   }
 
   get generationEventType() {
@@ -29,12 +29,13 @@ class NumberGenerator extends BaseGenerator {
       timestamp,
     };
 
-    this.eventListener.dispatchEvent(eventData);
     this.store.set(this.generationEventType, {
       status: StoreRecordStatus.NOT_HANDLED,
       data: generatedNumber,
       timestamp,
-    }, 'PX', this.generationPeriodInMs);
+    }, 'PX', this.generationPeriodInMs).then(() => {
+      this.eventListener.dispatchEvent(eventData);
+    });
 
     return {
       status: 'OK',
@@ -44,4 +45,3 @@ class NumberGenerator extends BaseGenerator {
 }
 
 module.exports = NumberGenerator;
-
